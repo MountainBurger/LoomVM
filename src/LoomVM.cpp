@@ -22,6 +22,12 @@ bool LoomVM::run() {
     cir = fetch();
 
     // Decode
+    switch (static_cast<Op>(cir)) {
+    case (Op::HLT): {
+        isRunning_ = false;
+        break;
+    }
+    }
     // ...
 
     // Execute
