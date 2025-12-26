@@ -19,7 +19,7 @@ bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
 bool LoomVM::run() {
     // Fetch
     int32_t cir = 0;
-    cir = program_[pc_];
+    cir = fetch();
 
     // Decode
     // ...
@@ -33,4 +33,15 @@ void LoomVM::dumpStack() const {
     for (int32_t i = 0; i < stack_.size(); i++) {
         std::cout << i << ": " << stack_[i] << std::endl;
     }
+}
+
+int32_t LoomVM::fetch() {
+    // Halt if nothing left to fetch
+    if (pc_ >= program_.size()) {
+        std::cerr << "Error: Program ended unexpectedly." << std::endl;
+        isRunning_ = false;
+        return 0;
+    }
+    // Return current then increment
+    return program_[pc_++];
 }

@@ -20,6 +20,7 @@ class LoomVM {
   private:
     std::vector<int32_t> stack_;
     std::vector<int32_t> program_;
-    int pc_ = 0;
+    int32_t pc_ = 0;
     bool isRunning_ = false;
+    int32_t fetch();
 };
