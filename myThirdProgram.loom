@@ -1,0 +1,43 @@
+# HLT = 0,   // Halt the machine
+# PSH = 1,   // Push a value to the top of the stack
+# DUP = 2,   // Pop a value from the stack then push it twice
+# ADD = 3,   // Add the top two values on the stack
+# SUB = 4,   // Subtract the top two values (top is subtrahend)
+# MUL = 5,   // Multiply the top two values
+# DIV = 6,   // Divide the top two values (top is divisor)
+# MOD = 7,   // Mod the top two values (top is the modulus)
+# PRN = 8,   // Pop and output the value at the top of the stack
+# EQ = 9,    // Pop y, pop x, push x == y
+# GT = 10,   // Pop y, pop x, push x > y
+# LT = 11,   // Pop y, pop x, push x < y
+# GEQ = 12,  // Pop y, pop x, push x >= y
+# LEQ = 13,  // Pop y, pop x, push x <= y
+# JMP = 14,  // Unconditional jump, set PC to target
+# JZ = 15,   // Pop value. Jump to target if value == 0
+# JNZ = 16,  // Pop value. Jump to target if value != 0
+
+# This program converts a decimal number to binary. It outputs digits of the
+# binary number starting from the least significant bit.
+
+# Push initial value to convert (e.g. 25 which is 11001)
+1 25  # Push x
+
+# [DIVIDE] 
+2  # Duplicate top (to consume for JZ)
+# Check if top is 0
+15 15  # Jump if 0 (to [STOP])
+
+# Mod top by 2
+2  # Duplicate x (to consume for MOD)
+1 2  # Push 2
+7    # Modulo (top % 2)
+8    # Print (the bit)
+
+# Floor divison top by 2
+1 2   # Push 2
+6     # Divide top by 2 and push to stack
+
+14 2  # Jump (to [DIVIDE])
+
+# [STOP]
+0  # Halt

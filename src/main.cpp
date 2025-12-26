@@ -13,8 +13,12 @@ int main() {
     };
 
     // vm.loadProgram(myFirstProgram);
-    vm.loadFromFile("mySecondProgram.loom");
-    vm.run();
+    // vm.loadFromFile("mySecondProgram.loom");
+    vm.loadFromFile("myThirdProgram.loom");
+    const bool isSuccess = vm.run();
+
+    if (!isSuccess)
+        vm.dumpStack();
 
     return 0;
 }

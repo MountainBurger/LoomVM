@@ -48,64 +48,155 @@ bool LoomVM::run() {
                 push(val);
                 break;
             }
+            case (Op::DUP): {
+                const int32_t top = pop();
+                push(top);
+                push(top);
+                break;
+            }
             case (Op::ADD): {
                 const int32_t y = pop();
                 const int32_t x = pop();
-                if (isRunning_) {
-                    const int32_t result = x + y;
-                    push(result);
-                }
+                const int32_t result = x + y;
+                push(result);
                 break;
             }
             case (Op::SUB): {
                 const int32_t y = pop();
                 const int32_t x = pop();
-                if (isRunning_) {
-                    const int32_t result = x - y;
-                    push(result);
-                }
+                const int32_t result = x - y;
+                push(result);
                 break;
             }
             case (Op::MUL): {
                 const int32_t y = pop();
                 const int32_t x = pop();
-                if (isRunning_) {
-                    const int32_t result = x * y;
-                    push(result);
-                }
+                const int32_t result = x * y;
+                push(result);
                 break;
             }
             case (Op::DIV): {
                 const int32_t y = pop();
                 const int32_t x = pop();
-                if (isRunning_) {
-                    if (y == 0) {
-                        std::cerr << "Error: Division by 0." << std::endl;
-                        isRunning_ = false;
-                    } else {
-                        const int32_t result = x / y;
-                        push(result);
-                    }
+                if (y == 0) {
+                    std::cerr << "Error: Division by 0." << std::endl;
+                    isRunning_ = false;
+                } else {
+                    const int32_t result = x / y;
+                    push(result);
+                }
+                break;
+            }
+            case (Op::MOD): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (y == 0) {
+                    std::cerr << "Error: Modulo by 0." << std::endl;
+                    isRunning_ = false;
+                } else {
+                    const int32_t result = x % y;
+                    push(result);
                 }
                 break;
             }
             case (Op::PRN): {
-                const int32_t val = pop();
+                const int32_t top = pop();
+                std::cout << top << std::endl;
+                break;
+            }
+            case (Op::EQ): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (x == y) {
+                    push(1);
+                } else {
+                    push(0);
+                }
+                break;
+            }
+            case (Op::GT): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (x > y) {
+                    push(1);
+                } else {
+                    push(0);
+                }
+                break;
+            }
+            case (Op::LT): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (x < y) {
+                    push(1);
+                } else {
+                    push(0);
+                }
+                break;
+            }
+            case (Op::GEQ): {
+                const int32_t y = pop();
+                const int32_t x = pop();
                 if (isRunning_) {
-                    std::cout << val << std::endl;
+                    if (x >= y) {
+                        push(1);
+                    } else {
+                        push(0);
+                    }
+                }
+                break;
+            }
+            case (Op::LEQ): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (x <= y) {
+                    push(1);
+                } else {
+                    push(0);
+                }
+                break;
+            }
+            case (Op::JMP): {
+                const int32_t target = fetch();
+                if (target < 0 || target >= program_.size()) {
+                    std::cerr << "Error: Invalid jump target (" << target
+                              << ")." << std::endl;
+                    isRunning_ = false;
+                }
+                pc_ = static_cast<size_t>(target);
+                break;
+            }
+            case (Op::JZ): {
+                const int32_t target = fetch();
+                const int32_t value = pop();
+                if (value == 0) {
+                    if (target < 0 || target >= program_.size()) {
+                        std::cerr << "Error: Invalid jump target (" << target
+                                  << ")." << std::endl;
+                        isRunning_ = false;
+                        break;
+                    }
+                    pc_ = static_cast<size_t>(target);
+                }
+                break;
+            }
+            case (Op::JNZ): {
+                const int32_t target = fetch();
+                const int32_t value = pop();
+                if (value != 0) {
+                    if (target < 0 || target >= program_.size()) {
+                        std::cerr << "Error: Invalid jump target (" << target
+                                  << ")." << std::endl;
+                        isRunning_ = false;
+                        break;
+                    }
+                    pc_ = static_cast<size_t>(target);
                 }
                 break;
             }
         }
     }
-    // Check whether we finished properly
-    if (isHaltReached) {
-        return true;
-    } else {
-        std::cerr << "Error: Program terminated unexpectedly (no HLT)."
-                  << std::endl;
-        return false;
-    }
+    return isHaltReached;
 }
 
 void LoomVM::dumpStack() const {
@@ -159,6 +250,8 @@ int32_t LoomVM::fetch() {
 }
 
 void LoomVM::push(int32_t const val) {
+    if (!isRunning_)
+        return;
     // Halt if stack full
     if (stack_.size() >= STACK_SIZE) {
         std::cerr << "Error: Stack overflow." << std::endl;
@@ -169,9 +262,10 @@ void LoomVM::push(int32_t const val) {
 }
 
 int32_t LoomVM::pop() {
-    // Halt if stack is empty
+    if (!isRunning_)
+        return 0;
     if (stack_.empty()) {
-        std::cerr << "Error: Stack underflow." << std::endl;
+        std::cerr << "Error: Stack underflow. (PC: " << pc_ << ")" << std::endl;
         isRunning_ = false;
         return 0;
     }
