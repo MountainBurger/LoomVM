@@ -1,6 +1,7 @@
 #include "LoomVM.hpp"
 #include <cstdint>
 #include <iostream>
+#include <iterator>
 #include <ostream>
 #include <vector>
 
@@ -81,6 +82,13 @@ bool LoomVM::run() {
                         const int32_t result = x / y;
                         push(result);
                     }
+                }
+                break;
+            }
+            case (Op::PRN): {
+                const int32_t val = pop();
+                if (isRunning_) {
+                    std::cout << val << std::endl;
                 }
                 break;
             }

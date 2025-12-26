@@ -15,6 +15,7 @@ class LoomVM {
         SUB = 3,  // Subtract the top two values (top is subtrahend)
         MUL = 4,  // Multiply the top two values
         DIV = 5,  // Divide the top two values (top is divisor)
+        PRN = 6,  // Pop and output the value at the top of the stack
     };
 
   private:
