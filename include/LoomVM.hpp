@@ -6,6 +6,7 @@ class LoomVM {
   public:
     bool loadProgram(const std::vector<int32_t> &program);
     bool run();
+    void dumpStack() const;
 
   private:
     std::vector<int32_t> stack_;

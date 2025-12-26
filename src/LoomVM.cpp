@@ -1,5 +1,6 @@
 #include "LoomVM.hpp"
 #include <cstdint>
+#include <iostream>
 #include <vector>
 
 bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
@@ -25,4 +26,11 @@ bool LoomVM::run() {
 
     // Execute
     // ...
+}
+
+void LoomVM::dumpStack() const {
+    std::cout << "Stack Dump" << std::endl;
+    for (int32_t i = 0; i < stack_.size(); i++) {
+        std::cout << i << ": " << stack_[i] << std::endl;
+    }
 }
