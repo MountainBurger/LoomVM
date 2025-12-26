@@ -10,11 +10,10 @@ class LoomVM {
     enum class Op : int32_t {
         HLT = 0,  // Halt the machine
         PSH = 1,  // Push a value to the top of the stack
-        POP = 2,  // Pop the top value from the stack
-        ADD = 3,  // Add the top two values on the stack
-        SUB = 4,  // Subtract the top two values (top is subtrahend)
-        MUL = 5,  // Multiply the top two values
-        DIV = 6,  // Divide the top two values (top is divisor)
+        ADD = 2,  // Add the top two values on the stack
+        SUB = 3,  // Subtract the top two values (top is subtrahend)
+        MUL = 4,  // Multiply the top two values
+        DIV = 5,  // Divide the top two values (top is divisor)
     };
 
   private:
@@ -23,4 +22,5 @@ class LoomVM {
     int32_t pc_ = 0;
     bool isRunning_ = false;
     int32_t fetch();
+    int32_t pop();
 };

@@ -51,3 +51,16 @@ int32_t LoomVM::fetch() {
     // Return current then increment
     return program_[pc_++];
 }
+
+int32_t LoomVM::pop() {
+    // Halt if stack is empty
+    if (stack_.empty()) {
+        std::cerr << "Error: Stack underflow." << std::endl;
+        isRunning_ = false;
+        return 0;
+    }
+    // Remove and return last value (top)
+    int32_t const val = stack_.back();
+    stack_.pop_back();
+    return val;
+}
