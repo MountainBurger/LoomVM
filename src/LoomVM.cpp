@@ -23,10 +23,56 @@ bool LoomVM::run() {
 
     // Decode
     switch (static_cast<Op>(cir)) {
-    case (Op::HLT): {
-        isRunning_ = false;
-        break;
-    }
+        case (Op::HLT): {
+            isRunning_ = false;
+            break;
+        }
+        case (Op::PSH): {
+            const int32_t val = fetch();
+            push(val);
+            break;
+        }
+        case (Op::ADD): {
+            const int32_t y = pop();
+            const int32_t x = pop();
+            if (isRunning_) {
+                const int32_t result = x + y;
+                push(result);
+            }
+            break;
+        }
+        case (Op::SUB): {
+            const int32_t y = pop();
+            const int32_t x = pop();
+            if (isRunning_) {
+                const int32_t result = x - y;
+                push(result);
+            }
+            break;
+        }
+        case (Op::MUL): {
+            const int32_t y = pop();
+            const int32_t x = pop();
+            if (isRunning_) {
+                const int32_t result = x * y;
+                push(result);
+            }
+            break;
+        }
+        case (Op::DIV): {
+            const int32_t y = pop();
+            const int32_t x = pop();
+            if (isRunning_) {
+                if (y == 0) {
+                    std::cerr << "Error: Division by 0." << std::endl;
+                    isRunning_ = false;
+                } else {
+                    const int32_t result = x / y;
+                    push(result);
+                }
+            }
+            break;
+        }
     }
     // ...
 
