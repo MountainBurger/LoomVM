@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <cstdint>
+#include <string>
 #include <vector>
 
 class LoomVM {
@@ -17,6 +18,7 @@ class LoomVM {
         DIV = 5,  // Divide the top two values (top is divisor)
         PRN = 6,  // Pop and output the value at the top of the stack
     };
+    void loadFromFile(const std::string &filename);
 
   private:
     std::size_t const STACK_SIZE = 1024;

@@ -1,0 +1,20 @@
+# Instructions:
+# HLT = 0,  // Halt the machine
+# PSH = 1,  // Push a value to the top of the stack
+# ADD = 2,  // Add the top two values on the stack
+# SUB = 3,  // Subtract the top two values (top is subtrahend)
+# MUL = 4,  // Multiply the top two values
+# DIV = 5,  // Divide the top two values (top is divisor)
+# PRN = 6,  // Pop and output the value at the top of the stack
+
+1 50  # Push 50
+1 2   # Push 2
+5     # Divide (50/2=25)
+1 10  # Push 10
+4     # Multiply (25*10=250)
+1 200 # Push 200
+3     # Subtract (250-200=50)
+1 14  # Push 14
+2     # Add (50+14=64)
+6     # Print (64)
+0     # Halt

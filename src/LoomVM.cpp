@@ -1,8 +1,12 @@
 #include "LoomVM.hpp"
+#include <cstddef>
 #include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <iterator>
 #include <ostream>
+#include <sstream>
+#include <string>
 #include <vector>
 
 bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
@@ -108,6 +112,38 @@ void LoomVM::dumpStack() const {
     std::cout << "Stack Dump" << std::endl;
     for (int32_t i = 0; i < stack_.size(); i++) {
         std::cout << i << ": " << stack_[i] << std::endl;
+    }
+}
+
+void LoomVM::loadFromFile(const std::string &filename) {
+    std::ifstream fileStream(filename);
+
+    // Ensure file opened successfully
+    if (!fileStream.is_open()) {
+        std::cerr << "Error: Could not read from file '" << filename << "'."
+                  << std::endl;
+        return;
+    }
+
+    // Clear any existing program
+    program_.clear();
+    std::string line;
+
+    // Read lines from input file stream
+    while (std::getline(fileStream, line)) {
+        // Search for the first comment symbol on this line
+        size_t commentPos = line.find('#');
+        // Truncate string if symbol was found
+        if (commentPos != std::string::npos) {
+            line = line.substr(0, commentPos);
+        }
+
+        // Read symbols from line string
+        std::stringstream lineStream(line);
+        int32_t value;
+        while (lineStream >> value) {
+            program_.push_back(value);
+        }
     }
 }
 

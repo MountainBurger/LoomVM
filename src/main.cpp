@@ -12,8 +12,9 @@ int main() {
         static_cast<int32_t>(LoomVM::Op::HLT)      // Exit
     };
 
-    vm.loadProgram(myFirstProgram);
-    bool const isSuccess = vm.run();
+    // vm.loadProgram(myFirstProgram);
+    vm.loadFromFile("mySecondProgram.loom");
+    vm.run();
 
     return 0;
 }
