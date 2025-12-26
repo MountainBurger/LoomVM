@@ -1,6 +1,7 @@
 #include "LoomVM.hpp"
 #include <cstdint>
 #include <iostream>
+#include <ostream>
 #include <vector>
 
 bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
@@ -17,67 +18,82 @@ bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
 }
 
 bool LoomVM::run() {
-    // Fetch
-    int32_t cir = 0;
-    cir = fetch();
+    isRunning_ = true;
+    bool isHaltReached = false;
 
-    // Decode
-    switch (static_cast<Op>(cir)) {
-        case (Op::HLT): {
-            isRunning_ = false;
+    while (isRunning_) {
+        // Fetch
+        int32_t cir = 0;
+        cir = fetch();
+
+        // If fetch reached end of program, isRunning_ was set to false
+        if (isRunning_ == false) {
             break;
         }
-        case (Op::PSH): {
-            const int32_t val = fetch();
-            push(val);
-            break;
-        }
-        case (Op::ADD): {
-            const int32_t y = pop();
-            const int32_t x = pop();
-            if (isRunning_) {
-                const int32_t result = x + y;
-                push(result);
+
+        // Decode and execute
+        switch (static_cast<Op>(cir)) {
+            case (Op::HLT): {
+                isHaltReached = true;
+                isRunning_ = false;
+                break;
             }
-            break;
-        }
-        case (Op::SUB): {
-            const int32_t y = pop();
-            const int32_t x = pop();
-            if (isRunning_) {
-                const int32_t result = x - y;
-                push(result);
+            case (Op::PSH): {
+                const int32_t val = fetch();
+                push(val);
+                break;
             }
-            break;
-        }
-        case (Op::MUL): {
-            const int32_t y = pop();
-            const int32_t x = pop();
-            if (isRunning_) {
-                const int32_t result = x * y;
-                push(result);
-            }
-            break;
-        }
-        case (Op::DIV): {
-            const int32_t y = pop();
-            const int32_t x = pop();
-            if (isRunning_) {
-                if (y == 0) {
-                    std::cerr << "Error: Division by 0." << std::endl;
-                    isRunning_ = false;
-                } else {
-                    const int32_t result = x / y;
+            case (Op::ADD): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (isRunning_) {
+                    const int32_t result = x + y;
                     push(result);
                 }
+                break;
             }
-            break;
+            case (Op::SUB): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (isRunning_) {
+                    const int32_t result = x - y;
+                    push(result);
+                }
+                break;
+            }
+            case (Op::MUL): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (isRunning_) {
+                    const int32_t result = x * y;
+                    push(result);
+                }
+                break;
+            }
+            case (Op::DIV): {
+                const int32_t y = pop();
+                const int32_t x = pop();
+                if (isRunning_) {
+                    if (y == 0) {
+                        std::cerr << "Error: Division by 0." << std::endl;
+                        isRunning_ = false;
+                    } else {
+                        const int32_t result = x / y;
+                        push(result);
+                    }
+                }
+                break;
+            }
         }
     }
-    // ...
-
-    // Execute
-    // ...
+    // Check whether we finished properly
+    if (isHaltReached) {
+        return true;
+    } else {
+        std::cerr << "Error: Program terminated unexpectedly (no HLT)."
+                  << std::endl;
+        return false;
+    }
 }
 
 void LoomVM::dumpStack() const {
