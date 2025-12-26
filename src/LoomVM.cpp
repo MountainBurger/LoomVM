@@ -1,4 +1,5 @@
 #include "LoomVM.hpp"
+#include <cstdint>
 #include <vector>
 
 bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
@@ -12,4 +13,16 @@ bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
     pc_ = 0;
 
     return true;
+}
+
+bool LoomVM::run() {
+    // Fetch
+    int32_t cir = 0;
+    cir = program_[pc_];
+
+    // Decode
+    // ...
+
+    // Execute
+    // ...
 }
