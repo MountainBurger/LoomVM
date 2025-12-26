@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -17,10 +18,12 @@ class LoomVM {
     };
 
   private:
+    std::size_t const STACK_SIZE = 1024;
     std::vector<int32_t> stack_;
     std::vector<int32_t> program_;
-    int32_t pc_ = 0;
+    size_t pc_ = 0;
     bool isRunning_ = false;
     int32_t fetch();
+    void push(int32_t const val);
     int32_t pop();
 };

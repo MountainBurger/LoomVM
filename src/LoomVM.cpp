@@ -52,6 +52,16 @@ int32_t LoomVM::fetch() {
     return program_[pc_++];
 }
 
+void LoomVM::push(int32_t const val) {
+    // Halt if stack full
+    if (stack_.size() >= STACK_SIZE) {
+        std::cerr << "Error: Stack overflow." << std::endl;
+        isRunning_ = false;
+        return;
+    }
+    stack_.push_back(val);
+}
+
 int32_t LoomVM::pop() {
     // Halt if stack is empty
     if (stack_.empty()) {
