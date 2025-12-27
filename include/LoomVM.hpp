@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class LoomVM {
@@ -39,4 +40,5 @@ class LoomVM {
     int32_t fetch();
     void push(int32_t const val);
     int32_t pop();
+    static const std::unordered_map<std::string, Op> &getOpcodeMap();
 };

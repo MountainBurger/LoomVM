@@ -7,6 +7,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 bool LoomVM::loadProgram(const std::vector<int32_t> &program) {
@@ -273,4 +274,20 @@ int32_t LoomVM::pop() {
     int32_t const val = stack_.back();
     stack_.pop_back();
     return val;
+}
+
+const std::unordered_map<std::string, LoomVM::Op> &getOpcodeMap() {
+    static const std::unordered_map<std::string, LoomVM::Op> opcodeMap = {
+
+        {"HLT", LoomVM::Op::HLT}, {"PSH", LoomVM::Op::PSH},
+        {"DUP", LoomVM::Op::DUP}, {"ADD", LoomVM::Op::ADD},
+        {"SUB", LoomVM::Op::SUB}, {"MUL", LoomVM::Op::MUL},
+        {"DIV", LoomVM::Op::DIV}, {"MOD", LoomVM::Op::MOD},
+        {"PRN", LoomVM::Op::PRN}, {"EQ", LoomVM::Op::EQ},
+        {"GT", LoomVM::Op::GT},   {"LT", LoomVM::Op::LT},
+        {"GEQ", LoomVM::Op::GEQ}, {"LEQ", LoomVM::Op::LEQ},
+        {"JMP", LoomVM::Op::JMP}, {"JZ", LoomVM::Op::JZ},
+        {"JNZ", LoomVM::Op::JNZ},
+    };
+    return opcodeMap;
 }
