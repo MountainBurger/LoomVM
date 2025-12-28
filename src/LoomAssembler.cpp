@@ -1,12 +1,15 @@
 #include "LoomAssembler.hpp"
 #include <cctype>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 std::vector<int32_t> LoomAssembler::assemble(const std::string &source) {
     std::vector<int32_t> program;
-    // ...
+
+    std::istringstream stringStream = std::istringstream(source);
+
     return program;
 };
 

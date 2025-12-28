@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include <iterator>
 #include <ostream>
 #include <sstream>
 #include <string>
@@ -138,12 +137,10 @@ bool LoomVM::run() {
             case (Op::GEQ): {
                 const int32_t y = pop();
                 const int32_t x = pop();
-                if (isRunning_) {
-                    if (x >= y) {
-                        push(1);
-                    } else {
-                        push(0);
-                    }
+                if (x >= y) {
+                    push(1);
+                } else {
+                    push(0);
                 }
                 break;
             }
@@ -163,8 +160,9 @@ bool LoomVM::run() {
                     std::cerr << "Error: Invalid jump target (" << target
                               << ")." << std::endl;
                     isRunning_ = false;
+                } else {
+                    pc_ = static_cast<size_t>(target);
                 }
-                pc_ = static_cast<size_t>(target);
                 break;
             }
             case (Op::JZ): {
@@ -176,8 +174,9 @@ bool LoomVM::run() {
                                   << ")." << std::endl;
                         isRunning_ = false;
                         break;
+                    } else {
+                        pc_ = static_cast<size_t>(target);
                     }
-                    pc_ = static_cast<size_t>(target);
                 }
                 break;
             }
@@ -231,7 +230,7 @@ void LoomVM::loadFromFile(const std::string &filename) {
         }
 
         // Read symbols from line string
-        std::stringstream lineStream(line);
+        std::istringstream lineStream(line);
         int32_t value;
         while (lineStream >> value) {
             program_.push_back(value);
@@ -239,7 +238,7 @@ void LoomVM::loadFromFile(const std::string &filename) {
     }
 }
 
-const std::unordered_map<std::string, LoomVM::Op> &getOpcodeMap() {
+const std::unordered_map<std::string, LoomVM::Op> &LoomVM::getOpcodeMap() {
     static const std::unordered_map<std::string, LoomVM::Op> opcodeMap = {
 
         {"HLT", LoomVM::Op::HLT}, {"PSH", LoomVM::Op::PSH},

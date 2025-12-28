@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
 class LoomAssembler {
   public:
     std::vector<int32_t> assemble(const std::string &source);
