@@ -1,0 +1,23 @@
+# Outputs binary representation for 25
+
+PSH 25  # Push value to convert
+
+:divide
+DUP
+# Halt if zero
+JZ stop
+
+# Mod top by 2
+DUP
+PSH 2
+MOD
+PRN
+
+# Floor div top by 2
+PSH 2
+DIV
+
+JMP divide
+
+:stop
+HLT
