@@ -30,6 +30,7 @@ class LoomVM {
         JNZ = 16,  // Pop value. Jump to target if value != 0
     };
     void loadFromFile(const std::string &filename);
+    static const std::unordered_map<std::string, Op> &getOpcodeMap();
 
   private:
     std::size_t const STACK_SIZE = 1024;
@@ -38,7 +39,6 @@ class LoomVM {
     size_t pc_ = 0;
     bool isRunning_ = false;
     int32_t fetch();
-    void push(int32_t const val);
+    void push(const int32_t val);
     int32_t pop();
-    static const std::unordered_map<std::string, Op> &getOpcodeMap();
 };

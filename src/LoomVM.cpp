@@ -239,6 +239,22 @@ void LoomVM::loadFromFile(const std::string &filename) {
     }
 }
 
+const std::unordered_map<std::string, LoomVM::Op> &getOpcodeMap() {
+    static const std::unordered_map<std::string, LoomVM::Op> opcodeMap = {
+
+        {"HLT", LoomVM::Op::HLT}, {"PSH", LoomVM::Op::PSH},
+        {"DUP", LoomVM::Op::DUP}, {"ADD", LoomVM::Op::ADD},
+        {"SUB", LoomVM::Op::SUB}, {"MUL", LoomVM::Op::MUL},
+        {"DIV", LoomVM::Op::DIV}, {"MOD", LoomVM::Op::MOD},
+        {"PRN", LoomVM::Op::PRN}, {"EQ", LoomVM::Op::EQ},
+        {"GT", LoomVM::Op::GT},   {"LT", LoomVM::Op::LT},
+        {"GEQ", LoomVM::Op::GEQ}, {"LEQ", LoomVM::Op::LEQ},
+        {"JMP", LoomVM::Op::JMP}, {"JZ", LoomVM::Op::JZ},
+        {"JNZ", LoomVM::Op::JNZ},
+    };
+    return opcodeMap;
+}
+
 int32_t LoomVM::fetch() {
     // Halt if nothing left to fetch
     if (pc_ >= program_.size()) {
@@ -274,20 +290,4 @@ int32_t LoomVM::pop() {
     int32_t const val = stack_.back();
     stack_.pop_back();
     return val;
-}
-
-const std::unordered_map<std::string, LoomVM::Op> &getOpcodeMap() {
-    static const std::unordered_map<std::string, LoomVM::Op> opcodeMap = {
-
-        {"HLT", LoomVM::Op::HLT}, {"PSH", LoomVM::Op::PSH},
-        {"DUP", LoomVM::Op::DUP}, {"ADD", LoomVM::Op::ADD},
-        {"SUB", LoomVM::Op::SUB}, {"MUL", LoomVM::Op::MUL},
-        {"DIV", LoomVM::Op::DIV}, {"MOD", LoomVM::Op::MOD},
-        {"PRN", LoomVM::Op::PRN}, {"EQ", LoomVM::Op::EQ},
-        {"GT", LoomVM::Op::GT},   {"LT", LoomVM::Op::LT},
-        {"GEQ", LoomVM::Op::GEQ}, {"LEQ", LoomVM::Op::LEQ},
-        {"JMP", LoomVM::Op::JMP}, {"JZ", LoomVM::Op::JZ},
-        {"JNZ", LoomVM::Op::JNZ},
-    };
-    return opcodeMap;
 }
