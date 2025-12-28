@@ -1,14 +1,65 @@
 #include "LoomAssembler.hpp"
 #include <cctype>
+#include <cstdint>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 std::vector<int32_t> LoomAssembler::assemble(const std::string &source) {
+    labels_.clear();
     std::vector<int32_t> program;
 
+    // Strip comments from source
     std::istringstream stringStream = std::istringstream(source);
+    std::string line;
+    std::string cleanSource = "";
+
+    while (std::getline(stringStream, line)) {
+        // Search for the first comment symbol on this line
+        size_t commentPos = line.find('#');
+        // Truncate string if symbol was found
+        if (commentPos != std::string::npos) {
+            line = line.substr(0, commentPos);
+        }
+        // Ensure there is still separation between tokens on different lines
+        cleanSource += line + " ";
+    }
+
+    // First pass
+    stringStream = std::istringstream(cleanSource);
+    std::string token;
+    int pc = 0;
+
+    while (stringStream >> token) {
+        if (isLabelDefinition(token)) {
+            // Save label identifier (exclude first char ':')
+            labels_.insert({token.substr(1, std::string::npos), pc});
+        } else  // Increment PC only if not label
+            pc++;
+    }
+
+    // Second pass
+    stringStream = std::istringstream(cleanSource);
+
+    while (stringStream >> token) {
+        if (isLabelDefinition(token)) {
+            ;  // Ignore label definitions
+        } else if (isInstruction(token)) {
+            int32_t opCode = static_cast<int32_t>(opMap_.at(token));
+            program.push_back(opCode);
+        } else if (isNumber(token)) {
+            int32_t num = static_cast<int32_t>(std::stoi(token));
+            program.push_back(num);
+        } else if (isLabelReference(token)) {
+            const int32_t target = labels_.at(token);
+            program.push_back(target);
+        } else {
+            std::cerr << "Error: Syntax error in program.";
+            return std::vector<int32_t>();
+        }
+    }
 
     return program;
 };
@@ -62,3 +113,7 @@ bool LoomAssembler::isLabelDefinition(const std::string &str) const {
     }
     return true;
 };
+
+bool LoomAssembler::isLabelReference(const std::string &str) const {
+    return labels_.contains(str);
+}
