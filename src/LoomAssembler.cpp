@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cstdint>
 #include <iostream>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
@@ -56,7 +57,7 @@ std::vector<int32_t> LoomAssembler::assemble(const std::string &source) {
             const int32_t target = labels_.at(token);
             program.push_back(target);
         } else {
-            std::cerr << "Error: Syntax error in program.";
+            std::cerr << "Error: Invalid token '" << token << "'." << std::endl;
             return std::vector<int32_t>();
         }
     }
@@ -65,13 +66,13 @@ std::vector<int32_t> LoomAssembler::assemble(const std::string &source) {
 };
 
 bool LoomAssembler::isInstruction(const std::string &str) const {
-    return opMap_.contains(str);
+    return opMap_.find(str) != opMap_.end();
 }
 
 bool LoomAssembler::isNumber(const std::string &str) const {
     // Allow one unary minus
     int startIx = 0;
-    if (str.starts_with('-')) {
+    if (str[startIx] == '-') {
         startIx = 1;
     }
 
@@ -91,7 +92,7 @@ bool LoomAssembler::isNumber(const std::string &str) const {
 bool LoomAssembler::isLabelDefinition(const std::string &str) const {
     int startIx = 0;  // String index to check from
     // Label definitions must start with ':'
-    if (!str.starts_with(':'))
+    if (str[startIx] != ':')
         return false;
     startIx = 1;
 
@@ -115,5 +116,5 @@ bool LoomAssembler::isLabelDefinition(const std::string &str) const {
 };
 
 bool LoomAssembler::isLabelReference(const std::string &str) const {
-    return labels_.contains(str);
+    return labels_.find(str) != labels_.end();
 }
